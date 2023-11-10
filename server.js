@@ -15,10 +15,25 @@ var pool  = mysql.createPool({
     host            : process.env.DBHOST,
     user            : process.env.DBUSER,
     password        : process.env.DBPASS,
-    database        : process.env.DBNAME
+    database        : process.env.DBNAME,
+    timezone: 'UTC'
   });
 
 // ENDPOINTS
+
+// logincheck
+app.post('/logincheck', (req, res)=>{
+
+  let table = 'users';
+  let field1 = 'email';
+  let field2 = 'passwd';
+  let value1 = req.body.email;
+  let value2 = req.body.passwd;
+
+  pool.query(`SELECT * FROM ${table} WHERE ${field1}='${value1}' AND ${field2}='${value2}'`, (err, results)=>{
+    sendResults(table, err, results, req, res, 'logincheck from');
+  });
+});
 
 app.get('/', function (req, res) {
   res.send('Simpe NodeJS Backend API');
